@@ -1,0 +1,57 @@
+<div id="codes"> {{ ascii_codes }} </div><br>
+<div id="chars">{{ ascii_chars }} </div> <br>
+
+<input id="A_range" class="range" type="range" name="A" min="0" max="255"> <div id="A_display"> 124 </div>
+<input id="B_range" class="range" type="range" name="B" min="0" max="255"> <div id="B_display"> 124 </div>
+<input id="C_range" class="range" type="range" name="C" min="0" max="255"> <div id="C_display"> 124 </div>
+
+<div id="unscrambled_codes"> {{ascii_codes}} </div>
+<div id="unscrambled_chars"> {{ascii_chars}} </div>
+
+<style>
+    .range {
+     width: 100%;
+
+     -webkit-transform: rotateY(180deg);
+   -moz-transform: rotateY(180deg);
+   -ms-transform: rotateY(180deg);
+   -o-transform: rotateY(180deg);
+   transform: rotateY(180deg);
+    }
+
+</style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+    $(".range").on('input', function () {
+        args = [];
+        aValue = parseInt($("#A_range").val());
+        bValue = parseInt($("#B_range").val());
+        cValue = parseInt($("#C_range").val());
+        args.push(aValue);
+        args.push(bValue);
+        args.push(cValue);
+        $("#A_display").text(aValue);
+        $("#B_display").text(bValue);
+        $("#C_display").text(cValue);
+
+        my_data = JSON.stringify({
+            'codes': {{ ascii_codes }},
+            'args': args,
+        })
+
+
+        $.ajax({
+            type: 'POST',
+            url: "{{url_for('unscramble')}}",
+            data: my_data,
+            contentType: "application/json; charset=utf-8",
+            success: function(result) {
+                $("#unscrambled_codes").text(result['codes'].join(' '));
+                $("#unscrambled_chars").text(result['text']);
+            }
+        })
+    })
+
+
+</script>
